@@ -46,6 +46,30 @@ function draw() {
   if (hands.length > 0) {
     for (let hand of hands) {
       if (hand.confidence > 0.1) {
+        // 定義要連接的關鍵點索引群組：0-4, 5-8, 9-12, 13-16, 17-20
+        let fingerParts = [[0, 1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16], [17, 18, 19, 20]];
+        
+        // 根據左右手設定連線顏色
+        if (hand.handedness == "Left") {
+          stroke(255, 0, 255);
+        } else {
+          stroke(255, 255, 0);
+        }
+        strokeWeight(4);
+
+        // 繪製每一根手指的連線
+        for (let part of fingerParts) {
+          for (let i = 0; i < part.length - 1; i++) {
+            let p1 = hand.keypoints[part[i]];
+            let p2 = hand.keypoints[part[i + 1]];
+            let x1 = map(p1.x, 0, video.width, offsetX, offsetX + displayW);
+            let y1 = map(p1.y, 0, video.height, offsetY, offsetY + displayH);
+            let x2 = map(p2.x, 0, video.width, offsetX, offsetX + displayW);
+            let y2 = map(p2.y, 0, video.height, offsetY, offsetY + displayH);
+            line(x1, y1, x2, y2);
+          }
+        }
+
         // Loop through keypoints and draw circles
         for (let i = 0; i < hand.keypoints.length; i++) {
           let keypoint = hand.keypoints[i];
